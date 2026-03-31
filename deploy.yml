@@ -3,7 +3,4 @@ build:
   docker:
     file: Dockerfile
 deploy:
-  - type: ecs
-    service: yinatra-testdemo-service-5djh0tat
-    cluster: ai-governance-yinatra
-    image: yinatra-testdemo:latest
+  - type: ec2
