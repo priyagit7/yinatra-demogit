@@ -9,5 +9,13 @@ jobs:
         uses: actions/checkout@v3
       - name: Build Docker Image
         run: docker build -t yinatra-testdemo .
-      - name: Done
-        run: echo "Build complete"
+      - name: Create artifact
+        run: zip -r artifact.zip .
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::942049393866:role/github-actions-deployer
+          aws-region: ap-south-1
+
+      - name: Upload artifact to S3
+        run: aws s3 cp artifact.zip s3://abaxys-deployss/artifacts/yinatra/
