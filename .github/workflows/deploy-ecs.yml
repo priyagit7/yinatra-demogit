@@ -1,0 +1,31 @@
+name: Deploy to ECS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::942049393866:role/github-actions-deployer
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and Push to ECR
+        run: |
+          docker build -t yinatra-testdemo .
+          docker tag yinatra-testdemo:latest 942049393866.dkr.ecr.ap-south-1.amazonaws.com/yinatra-ecr-repo:latest
+          docker push 942049393866.dkr.ecr.ap-south-1.amazonaws.com/yinatra-ecr-repo:latest
+          echo "Pushed to ECR successfully"
