@@ -2,6 +2,19 @@ name: Deploy to ECS
 
 on:
   workflow_dispatch:
+    inputs:
+      phase:
+        description: 'Deployment phase'
+        required: false
+        default: 'deploy'
+      pipeline_run_id:
+        description: 'Pipeline run ID'
+        required: false
+        default: ''
+      image_tag:
+        description: 'Docker image tag'
+        required: false
+        default: 'latest'
 
 permissions:
   id-token: write
