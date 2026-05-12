@@ -1,36 +1,28 @@
 name: Deploy
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   id-token: write
   contents: read
-
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Build Docker Image
         run: docker build -t yinatra-testdemo .
-
       - name: Save Docker image as tar.gz
         run: |
           mkdir -p /tmp/artifact
           docker save yinatra-testdemo | gzip > /tmp/artifact/yinatra-testdemo.tar.gz
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::942049393866:role/github-actions-deployer
           aws-region: ap-south-1
-
       - name: Upload artifact to S3
         run: |
           aws s3 cp /tmp/artifact/yinatra-testdemo.tar.gz \
